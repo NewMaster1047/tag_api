@@ -24,7 +24,7 @@ from rest_framework.permissions import AllowAny
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Blog API",
+        title="Tag_service API",
 
         default_version='v1', ),
     public=True,
