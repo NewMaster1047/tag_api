@@ -12,3 +12,7 @@ class TagSerializer(ModelSerializer):
 class TagCreateSerializer(Serializer):
     d = serializers.CharField()
 
+
+class TagFilterSerializer(Serializer):
+    tags = serializers.CharField()
+
