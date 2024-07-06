@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from drf_yasg.utils import swagger_auto_schema
 from .models import Tag
-from .serializer import TagSerializer, TagCreateSerializer
+from .serializer import TagSerializer, TagCreateSerializer, TagFilterSerializer
 from .utils import tag_create, tag_filter
 
 
@@ -43,7 +43,7 @@ class TagFilterViewSet(ViewSet):
         operation_description="tag",
         operation_summary="Tag filter",
         responses={200: TagSerializer()},
-        request_body=TagCreateSerializer(),
+        request_body=TagFilterSerializer(),
         tags=['tag']
     )
     def tagfilter(self, request, *args, **kwargs):
