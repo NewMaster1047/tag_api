@@ -6,6 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from .models import Tag
 from .serializer import TagSerializer, TagCreateSerializer, TagFilterSerializer
 from .utils import tag_create, tag_filter
+import requests
 
 
 class TagListViewSet(ViewSet):
@@ -43,11 +44,16 @@ class TagFilterViewSet(ViewSet):
         operation_description="tag",
         operation_summary="Tag filter",
         responses={200: TagSerializer()},
-        request_body=TagFilterSerializer(),
         tags=['tag']
     )
     def tagfilter(self, request, *args, **kwargs):
-        filters = request.data.get('tags')
-        f_tags = tag_filter(filters)
+        filters = kwargs.get('tag_name')
+        filters = f"#{filters}"
+        tags = Tag.objects.filter(name=filters).first()
+        if tags is None:
+            return Response({"result": "Tag is not Found"})
 
-        return Response({"result": f_tags})
+        url = "http://134.122.76.27:8111/api/v1/posts/"
+        posts = requests.get(url)
+
+        return Response({"result": posts})
