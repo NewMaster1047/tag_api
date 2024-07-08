@@ -54,6 +54,6 @@ class TagFilterViewSet(ViewSet):
             return Response({"result": "Tag is not Found"})
 
         url = "http://134.122.76.27:8111/api/v1/posts/"
-        posts = requests.get(url)
+        posts = requests.get(url).json()
 
         return Response({"result": posts})
