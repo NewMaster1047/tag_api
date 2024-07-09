@@ -53,7 +53,16 @@ class TagFilterViewSet(ViewSet):
         if tags is None:
             return Response({"result": "Tag is not Found"})
 
-        url = "http://134.122.76.27:8111/api/v1/posts/"
-        posts = requests.get(url).json()
+        filtered_posts = []
 
-        return Response({"result": posts})
+        url = "http://134.122.76.27:8111/api/v1/posts/"
+        posts = dict(requests.get(url).json())
+        post = posts.get('results')
+        for i in post:
+            d = i['description']
+            filter_d = tag_filter(d)
+            for f in filter_d:
+                if f == d:
+                    filtered_posts.append(i)
+
+        return Response(filtered_posts)
