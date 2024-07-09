@@ -13,12 +13,13 @@ def tag_filter(description):
     return f_data
 
 
-def tag_create(tags):
-    for i in tags:
-        tag = Tag.objects.filter(name=i).first()
-        if tag is None:
-            serializer = TagSerializer(data={"name": i})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+def tag_create(tag):
+    tag = str(tag)
+    tag_obj = Tag.objects.filter(name=tag).first()
 
-    return tags
+    if tag_obj is None:
+        serializer = TagSerializer(data={"name": tag})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+    return tag_obj

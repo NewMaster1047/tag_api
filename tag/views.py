@@ -22,21 +22,21 @@ class TagListViewSet(ViewSet):
         return Response(serializer.data)
 
 
-class TagCreateViewSet(ViewSet):
-
-    @swagger_auto_schema(
-        operation_description="tag",
-        operation_summary="Create a new tag",
-        responses={200: TagSerializer()},
-        request_body=TagCreateSerializer(),
-        tags=['tag']
-    )
-    def tagcreate(self, request, *args, **kwargs):
-        data = request.data.get('d')
-        f_tag = tag_filter(data)
-        d = tag_create(f_tag)
-
-        return Response({"result": d})
+# class TagCreateViewSet(ViewSet):
+#
+#     @swagger_auto_schema(
+#         operation_description="tag",
+#         operation_summary="Create a new tag",
+#         responses={200: TagSerializer()},
+#         request_body=TagCreateSerializer(),
+#         tags=['tag']
+#     )
+#     def tagcreate(self, request, *args, **kwargs):
+#         data = request.data.get('d')
+#         f_tag = tag_filter(data)
+#         d = tag_create(f_tag)
+#
+#         return Response({"result": d})
 
 
 class TagFilterViewSet(ViewSet):
@@ -47,11 +47,10 @@ class TagFilterViewSet(ViewSet):
         tags=['tag']
     )
     def tagfilter(self, request, *args, **kwargs):
-        filters = kwargs.get('tag_name')
-        filters = f"#{filters}"
-        tags = Tag.objects.filter(name=filters).first()
-        if tags is None:
-            return Response({"result": "Tag is not Found"})
+        filter = kwargs.get('tag_name')
+        filter = f"#{filter}"
+
+        tag_create(filter)
 
         filtered_posts = []
 
@@ -62,7 +61,7 @@ class TagFilterViewSet(ViewSet):
             d = i['description']
             filter_d = tag_filter(d)
             for f in filter_d:
-                if f == d:
+                if f == filter:
                     filtered_posts.append(i)
 
         return Response(filtered_posts)
