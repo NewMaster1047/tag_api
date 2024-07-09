@@ -22,4 +22,4 @@ def tag_create(tag):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-    return tag_obj
+    return True
