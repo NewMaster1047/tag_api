@@ -30,8 +30,9 @@ class TagFilterViewSet(ViewSet):
         tags=['tag']
     )
     def tagfilter(self, request, *args, **kwargs):
-        filter = kwargs.get('tag_name')
-        filter = f"#{filter}"
+        filter_get = kwargs.get('tag_name')
+        filter_lower = filter_get.lower()
+        filter = f"#{filter_lower}"
 
         tag_create(filter)
 
@@ -44,7 +45,7 @@ class TagFilterViewSet(ViewSet):
             d = i['description']
             filter_d = tag_filter(d)
             for f in filter_d:
-                if f == filter:
+                if f.lower() == filter:
                     filtered_posts.append(i)
 
         return Response(filtered_posts)
