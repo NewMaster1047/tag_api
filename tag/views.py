@@ -19,6 +19,7 @@ class TagListViewSet(ViewSet):
     def taglist(self, request, *args, **kwargs):
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
+
         return Response(serializer.data)
 
 
@@ -30,22 +31,20 @@ class TagFilterViewSet(ViewSet):
         tags=['tag']
     )
     def tagfilter(self, request, *args, **kwargs):
-        filter_get = kwargs.get('tag_name')
-        filter_lower = filter_get.lower()
-        filter = f"#{filter_lower}"
-
-        tag_create(filter)
+        get_tag = kwargs.get('tag_name')
+        tag_lowered = get_tag.lower()
+        tag = f"#{tag_lowered}"
 
         filtered_posts = []
 
         url = "http://134.122.76.27:8111/api/v1/posts/"
-        posts = dict(requests.get(url).json())
+        posts = requests.get(url).json()
         post = posts.get('results')
         for i in post:
-            d = i['description']
-            filter_d = tag_filter(d)
-            for f in filter_d:
-                if f.lower() == filter:
-                    filtered_posts.append(i)
+            description = i['description']
+            tag_f = tag_filter(description, tag)
+            if tag_f is True:
+                filtered_posts.append(i)
 
         return Response(filtered_posts)
+

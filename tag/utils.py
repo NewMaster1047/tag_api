@@ -3,14 +3,17 @@ from .models import Tag
 from .serializer import TagSerializer
 
 
-def tag_filter(description):
+def tag_filter(description, tag):
     data = re.findall(r"#.[^#|\s+]*", description)
-    f_data = []
-    for i in data:
-        if '#' in i:
-            f_data.append(i)
 
-    return f_data
+    l_data = []
+    for i in data:
+        l_data.append(i.lower())
+
+    if tag in l_data:
+        return True
+
+    return False
 
 
 def tag_create(tag):
