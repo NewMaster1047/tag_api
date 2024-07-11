@@ -51,8 +51,9 @@ class TagFilterViewSet(ViewSet):
 
         for i in posts:
             description = i['description']
-            tag_f = tag_filter(description, tag)
-            if tag_f is True:
-                filtered_posts.append(i)
+            if description is not None:
+                tag_f = tag_filter(description, tag)
+                if tag_f is True:
+                    filtered_posts.append(i)
 
-        return Response(posts, status=status.HTTP_200_OK)
+        return Response(filtered_posts, status=status.HTTP_200_OK)
