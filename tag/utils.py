@@ -16,7 +16,6 @@ def tag_filter(description, tag):
     if tag in l_data:
         return True
 
-    return True
 
 
 def tag_create(tag):
