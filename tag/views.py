@@ -35,11 +35,15 @@ class TagFilterViewSet(ViewSet):
         tag_lowered = get_tag.lower()
         tag = f"#{tag_lowered}"
 
+        gettoken_url = "http://134.122.76.27:8114/api/v1/login/"
+        get_token = requests.post(gettoken_url, data={"service_id": 5, "service_name": "Tag",
+                                                      "secret_key": "ba27a5a2-cec3-45d7-ab8e-eba0a16d3bc9"}).json()
         filtered_posts = []
 
-        url = "http://134.122.76.27:8111/api/v1/posts/"
-        posts = requests.get(url).json()
+        getpost_url = "http://134.122.76.27:8111/api/v1/posts/list/"
+        posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
         post = posts.get('results')
+
         for i in post:
             description = i['description']
             tag_f = tag_filter(description, tag)
@@ -47,4 +51,3 @@ class TagFilterViewSet(ViewSet):
                 filtered_posts.append(i)
 
         return Response(filtered_posts)
-
