@@ -45,10 +45,18 @@ class TagFilterViewSet(ViewSet):
 
         gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
         get_token = requests.post(gettoken_url, data=data).json()
+
+        if get_token.status_code < 200 or get_token.status_code > 299:
+            return Response(data={"Token": False}, status=status.HTTP_400_BAD_REQUEST)
+
         filtered_posts = []
 
         getpost_url = f"{settings.URL_POST_SERVICE}/posts/list/"
         posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
+
+        if posts.status_code < 200 or posts.status_code > 299:
+            return Response(data={"Posts": False}, status=status.HTTP_400_BAD_REQUEST)
+
         post = posts.get('results')
 
         for i in post:
