@@ -37,32 +37,22 @@ class TagFilterViewSet(ViewSet):
         tag_lowered = get_tag.lower()
         tag = f"#{tag_lowered}"
 
-        data = {
-            "service_id": settings.SERVICE_ID,
-            "service_name": settings.SERVICE_NAME,
-            "secret_key": settings.SECRET_KEY
-        }
-
         gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
-        get_token = requests.post(gettoken_url, data=data).json()
-
-        if get_token.status_code < 200 or get_token.status_code > 299:
-            return Response(data={"Token": False}, status=get_token.status_code)
-
+        get_token = requests.post(gettoken_url,
+                                  data={
+                                      "service_id": 5,
+                                      "service_name": "Tag",
+                                      "secret_key": "ba27a5a2-cec3-45d7-ab8e-eba0a16d3bc9"
+                                  }).json()
         filtered_posts = []
 
         getpost_url = f"{settings.URL_POST_SERVICE}/posts/list/"
         posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
 
-        if posts.status_code < 200 or posts.status_code > 299:
-            return Response(data={"Posts": False}, status=get_token.status_code)
-
-        post = posts.get('results')
-
-        for i in post:
+        for i in posts:
             description = i['description']
             tag_f = tag_filter(description, tag)
             if tag_f is True:
                 filtered_posts.append(i)
 
-        return Response(filtered_posts, status=status.HTTP_200_OK)
+        return Response(posts, status=status.HTTP_200_OK)
