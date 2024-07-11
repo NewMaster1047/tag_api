@@ -2,11 +2,13 @@ from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from .models import Tag
 from .serializer import TagSerializer
 from .utils import tag_create, tag_filter
 import requests
+from django.conf import settings
 
 
 class TagListViewSet(ViewSet):
@@ -20,7 +22,7 @@ class TagListViewSet(ViewSet):
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TagFilterViewSet(ViewSet):
@@ -35,12 +37,17 @@ class TagFilterViewSet(ViewSet):
         tag_lowered = get_tag.lower()
         tag = f"#{tag_lowered}"
 
-        gettoken_url = "http://134.122.76.27:8114/api/v1/login/"
-        get_token = requests.post(gettoken_url, data={"service_id": 5, "service_name": "Tag",
-                                                      "secret_key": "ba27a5a2-cec3-45d7-ab8e-eba0a16d3bc9"}).json()
+        data = {
+            "service_id": settings.SERVICE_ID,
+            "service_name": settings.SERVICE_NAME,
+            "secret_key": settings.SECRET_KEY
+        }
+
+        gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
+        get_token = requests.post(gettoken_url, data=data).json()
         filtered_posts = []
 
-        getpost_url = "http://134.122.76.27:8111/api/v1/posts/list/"
+        getpost_url = f"{settings.URL_POST_SERVICE}/posts/list/"
         posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
         post = posts.get('results')
 
@@ -50,4 +57,4 @@ class TagFilterViewSet(ViewSet):
             if tag_f is True:
                 filtered_posts.append(i)
 
-        return Response(filtered_posts)
+        return Response(filtered_posts, status=status.HTTP_200_OK)
