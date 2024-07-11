@@ -47,7 +47,7 @@ class TagFilterViewSet(ViewSet):
         get_token = requests.post(gettoken_url, data=data).json()
 
         if get_token.status_code < 200 or get_token.status_code > 299:
-            return Response(data={"Token": False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"Token": False}, status=get_token.status_code)
 
         filtered_posts = []
 
@@ -55,7 +55,7 @@ class TagFilterViewSet(ViewSet):
         posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
 
         if posts.status_code < 200 or posts.status_code > 299:
-            return Response(data={"Posts": False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"Posts": False}, status=get_token.status_code)
 
         post = posts.get('results')
 
