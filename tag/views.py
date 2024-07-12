@@ -42,7 +42,6 @@ class TagFilterViewSet(ViewSet):
         get_tag = kwargs.get('tag_name')
         tag_lowered = get_tag.lower()
         tag = f"#{tag_lowered}"
-        tag_create(tag)
 
         gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
         get_token = requests.post(gettoken_url,
@@ -62,5 +61,6 @@ class TagFilterViewSet(ViewSet):
                 tag_f = tag_filter(description, tag)
                 if tag_f is True:
                     filtered_posts.append(i)
+                    tag_create(tag)
 
         return Response(filtered_posts, status=status.HTTP_200_OK)
