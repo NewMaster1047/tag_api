@@ -22,7 +22,13 @@ class TagListViewSet(ViewSet):
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        val = []
+
+        for i in serializer.data:
+            dict_values = i['name']
+            val.append(dict_values)
+
+        return Response(val, status=status.HTTP_200_OK)
 
 
 class TagFilterViewSet(ViewSet):
