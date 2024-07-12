@@ -19,6 +19,21 @@ class TagListViewSet(ViewSet):
         responses={200: TagSerializer()},
     )
     def taglist(self, request, *args, **kwargs):
+        gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
+        get_token = requests.post(gettoken_url,
+                                  data={
+                                      "service_id": 5,
+                                      "service_name": "Tag",
+                                      "secret_key": "ba27a5a2-cec3-45d7-ab8e-eba0a16d3bc9"
+                                  }).json()
+        getpost_url = f"{settings.URL_POST_SERVICE}/posts/list/"
+        posts = requests.post(getpost_url, data={"token": get_token['token']}).json()
+
+        for i in posts:
+            description = i['description']
+            if description is not None:
+                tag_filter(description, '')
+
         tags = Tag.objects.all()
         serializer = TagSerializer(tags, many=True)
 
