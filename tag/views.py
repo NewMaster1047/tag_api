@@ -36,6 +36,7 @@ class TagFilterViewSet(ViewSet):
         get_tag = kwargs.get('tag_name')
         tag_lowered = get_tag.lower()
         tag = f"#{tag_lowered}"
+        tag_create(tag)
 
         gettoken_url = f"{settings.URL_TOKEN_SERVICE}/login/"
         get_token = requests.post(gettoken_url,
